@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args){
-        String mode = "Hard";
+        String mode = "Medium";
         int[][] initialState = new int[3][3];
         int[][] goalState = new int[][]{{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
 
@@ -20,10 +20,12 @@ public class Main {
 
         Node newNode = new Node(null, child, initialState);
 
-        BFS breadth = new BFS(newNode, goalState);
-        breadth.BFS();
+        // BFS breadth = new BFS(newNode, goalState);
+        // breadth.BFS();
 
-        // dfs(initialState, goalState);
+        // DFS depthfirst = new DFS(newNode, goalState);
+        // depthfirst.DFS(newNode, goalState);
+
         // iterativeDeepening(initialState, goalState);
         // uniformCost(initialState, goalState);
 
