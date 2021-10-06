@@ -1,28 +1,29 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Stack;
 
-public class ITDN {
-
-    public void ITDN(Node newNode, int[][] goalState, int depthLimit){
-        Stack<Node> toCheck = new Stack<Node>();
+public class AStarThree {
+    public void AStarThree(Node newNode, int[][] goalState){
+        ArrayList<Node> toCheck = new ArrayList<Node>();
         ArrayList<Node> checked = new ArrayList<Node>();
+
         boolean goalFound = false;
-
-        toCheck.push(newNode);
-        int statesChecked = 1;
-        int space = 0;
+        toCheck.add(newNode);
+        int stateChecked = 1;
         int time = 0;
+        int space = 0;
 
-        while(!toCheck.isEmpty()){
+        while (!toCheck.isEmpty()) {
             if(toCheck.size() > space){
                 space = toCheck.size();
             }
-            Node currentNode = toCheck.pop();
-            time++;
+            // sort the nodes by cost
+            int small = sorting(toCheck);
+            Node currentNode = toCheck.get(small);
+            toCheck.remove(small);
+            time += 1;
             checked.add(currentNode);
 
-            if(compareGoal(currentNode.state, goalState)){
+            if (compareGoal(currentNode.state, goalState)) {
                 goalFound = true;
                 System.out.println("Goal State Found!");
                 trace(currentNode);
@@ -32,41 +33,62 @@ public class ITDN {
             }
 
             Node up = currentNode.Up(currentNode);
-            if(up != null && up.level <= depthLimit && uniqueToStack(toCheck, up) && uniqueToChecked(checked, up)){
-                toCheck.push(up);
+            if (up != null && uniqueToArr(toCheck, up) && uniqueToChecked(checked, up)) {
+                toCheck.add(up);
                 currentNode.children.add(up);
                 printing(up);
             }
 
-
             Node down = currentNode.Down(currentNode);
-            if(down != null && down.level <= depthLimit && uniqueToStack(toCheck, down) && uniqueToChecked(checked, down)){
-                toCheck.push(down);
+            if (down != null && uniqueToArr(toCheck, down) && uniqueToChecked(checked, down)) {
+                toCheck.add(down);
                 currentNode.children.add(down);
                 printing(down);
-
             }
 
             Node left = currentNode.Left(currentNode);
-            if(left != null && left.level <= depthLimit && uniqueToStack(toCheck, left) && uniqueToChecked(checked, left)){
-                toCheck.push(left);
+            if (left != null && uniqueToArr(toCheck, left) && uniqueToChecked(checked, left)) {
+                toCheck.add(left);
                 currentNode.children.add(left);
                 printing(left);
             }
 
             Node right = currentNode.Right(currentNode);
-            if(right != null && right.level <= depthLimit && uniqueToStack(toCheck, right) && uniqueToChecked(checked, right)){
-                toCheck.push(right);
+            if (right != null && uniqueToArr(toCheck, right) && uniqueToChecked(checked, right)) {
+                toCheck.add(right);
                 currentNode.children.add(right);
                 printing(right);
             }
 
-            statesChecked = statesChecked + 1;
+            System.out.println("State checked: " + stateChecked++);
         }
 
         if(goalFound == false){
-            System.out.println("Depth limit reached, but goal state hasn't been found yet.");
+            System.out.println("Goal state wasn't found based on the given input.");
         }
+    }
+
+    public int sorting(ArrayList<Node> listings){
+        int smallest = Integer.MAX_VALUE;
+        int smallIndex = 0;
+        int size = listings.size();
+
+        for(int i = 0; i < size; i++){
+            if(listings.get(i).hThree < smallest){
+                smallest = listings.get(i).hThree;
+                smallIndex = i;
+            }
+        }
+        return smallIndex;
+        /*for(int i = 0; i < size - 1; i++){
+            for(int j = 0; j < size - i - 1; j++){
+                if(listings.get(j).cost > listings.get(j + 1).cost){
+                    Node tmp = listings.get(j);
+                    listings.set(j, listings.get(j + 1));
+                    listings.set(j + 1, tmp);
+                }
+            }
+        }*/
     }
 
     private boolean compareGoal(int[][] state, int[][] goalState) {
@@ -82,7 +104,7 @@ public class ITDN {
         return false;
     }
 
-    public boolean uniqueToStack(Stack<Node> toCheck, Node currentNode){
+    public boolean uniqueToArr(ArrayList<Node> toCheck, Node currentNode){
 
         if(toCheck.size() == 0){
             return true;
@@ -123,13 +145,11 @@ public class ITDN {
     public void trace(Node node){
         ArrayList<int[][]> tracing = new ArrayList<int[][]>();
         int length = 0;
-        int itd_cost = 0;
-        System.out.println("Depth: " + node.level);
+        int a3_cost = node.cost;
 
         while(node.parent != null){
             tracing.add(node.parent.state);
             length++;
-            itd_cost++;
             node = node.parent;
         }
 
@@ -138,7 +158,7 @@ public class ITDN {
         }
 
         System.out.println("Lenght: " + length);
-        System.out.println("Cost: " + itd_cost);
+        System.out.println("Cost: " + a3_cost);
     }
 
     private void printing(Node nowNode) {

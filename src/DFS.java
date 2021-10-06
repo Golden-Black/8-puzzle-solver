@@ -1,28 +1,32 @@
 import java.util.*;
 
 public class DFS {
-    public Node newNode;
-    public int[][] goalState;
-
-    public DFS(Node newNode, int[][] goalState) {
-        this.newNode = newNode;
-        this.goalState = goalState;
-    }
 
     public void DFS(Node newNode, int[][] goalState){
         Stack<Node> toCheck = new Stack<Node>();
         ArrayList<Node> checked = new ArrayList<Node>();
 
+        boolean goalFound = false;
+
         toCheck.push(newNode);
         int stateChecked = 1;
+        int space = 0;
+        int time = 0;
 
         while(!toCheck.isEmpty()){
+            if(toCheck.size() > space){
+                space = toCheck.size();
+            }
             Node currentNode = toCheck.pop();
             checked.add(currentNode);
+            time += 1;
 
             if(compareGoal(currentNode.state, goalState)){
+                goalFound = true;
                 System.out.println("Goal State Found!");
                 trace(currentNode);
+                System.out.println("Time: " + time);
+                System.out.println("Space: " + space);
                 break;
             }
 
@@ -30,48 +34,35 @@ public class DFS {
             if(up != null && uniqueToStack(toCheck, up) && uniqueToChecked(checked, up)){
                 toCheck.push(up);
                 currentNode.children.add(up);
-
-                System.out.println(Arrays.toString(up.state[0]));
-                System.out.println(Arrays.toString(up.state[1]));
-                System.out.println(Arrays.toString(up.state[2]));
-                System.out.println("\n");
+                printing(up);
             }
 
             Node down = currentNode.Down(currentNode);
             if(down != null && uniqueToStack(toCheck, down) && uniqueToChecked(checked, down)){
                 toCheck.push(down);
                 currentNode.children.add(down);
-
-                System.out.println(Arrays.toString(down.state[0]));
-                System.out.println(Arrays.toString(down.state[1]));
-                System.out.println(Arrays.toString(down.state[2]));
-                System.out.println("\n");
-
+                printing(down);
             }
 
             Node left = currentNode.Left(currentNode);
             if(left != null && uniqueToStack(toCheck, left) && uniqueToChecked(checked, left)){
                 toCheck.push(left);
                 currentNode.children.add(left);
-
-                System.out.println(Arrays.toString(left.state[0]));
-                System.out.println(Arrays.toString(left.state[1]));
-                System.out.println(Arrays.toString(left.state[2]));
-                System.out.println("\n");
+                printing((left));
             }
 
             Node right = currentNode.Right(currentNode);
             if(right != null && uniqueToStack(toCheck, right) && uniqueToChecked(checked, right)){
                 toCheck.push(right);
                 currentNode.children.add(right);
-
-                System.out.println(Arrays.toString(right.state[0]));
-                System.out.println(Arrays.toString(right.state[1]));
-                System.out.println(Arrays.toString(right.state[2]));
-                System.out.println("\n");
+                printing(right);
             }
 
             System.out.println("State checked: " +stateChecked++);
+        }
+
+        if(goalFound == false){
+            System.out.println("Goal state wasn't found based on the given input.");
         }
     }
 
@@ -129,11 +120,12 @@ public class DFS {
     public void trace(Node node){
         ArrayList<int[][]> tracing = new ArrayList<int[][]>();
         int length = 0;
+        int dfs_cost = 0;
 
         while(node.parent != null){
             tracing.add(node.parent.state);
             length++;
-
+            dfs_cost++;
             node = node.parent;
         }
 
@@ -142,7 +134,13 @@ public class DFS {
         }
 
         System.out.println("Lenght: " + length);
-
+        System.out.println("Cost: " + dfs_cost);
     }
 
+    private void printing(Node nowNode) {
+        System.out.println(Arrays.toString(nowNode.state[0]));
+        System.out.println(Arrays.toString(nowNode.state[1]));
+        System.out.println(Arrays.toString(nowNode.state[2]));
+        System.out.println("\n");
+    }
 }

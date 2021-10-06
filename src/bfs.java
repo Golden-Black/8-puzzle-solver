@@ -13,15 +13,27 @@ class BFS {
         Queue<Node> toCheck = new LinkedList<Node>();
         ArrayList<Node> checked = new ArrayList<Node>();
 
+        boolean goalFound = false;
+
         toCheck.add(newNode);
         int stateChecked = 1;
+        int time = 0; // number of nodes popped off from the queue
+        int space = 0;
 
         while(!toCheck.isEmpty()){
+            if(toCheck.size() > space){
+                space = toCheck.size();
+            }
+
             Node currentNode = toCheck.poll();
+            time += 1;
 
             if(compareGoal(currentNode.state, goalState)){
+                goalFound = true;
                 System.out.println("Goal State Found!");
                 trace(currentNode);
+                System.out.println("Time: " + time);
+                System.out.println("Space: " + space);
                 break;
             }
 
@@ -29,48 +41,36 @@ class BFS {
             if(up != null && uniqueToQue(toCheck, up) && uniqueToChecked(checked, up)){
                 toCheck.add(up);
                 currentNode.children.add(up);
-
-                System.out.println(Arrays.toString(up.state[0]));
-                System.out.println(Arrays.toString(up.state[1]));
-                System.out.println(Arrays.toString(up.state[2]));
-                System.out.println("\n");
+                printing(up);
             }
 
             Node down = currentNode.Down(currentNode);
             if(down != null && uniqueToQue(toCheck, down) && uniqueToChecked(checked, down)){
                 toCheck.add(down);
                 currentNode.children.add(down);
-
-                System.out.println(Arrays.toString(down.state[0]));
-                System.out.println(Arrays.toString(down.state[1]));
-                System.out.println(Arrays.toString(down.state[2]));
-                System.out.println("\n");
+                printing(down);
             }
 
             Node left = currentNode.Left(currentNode);
             if(left != null && uniqueToQue(toCheck, left) && uniqueToChecked(checked, left)){
                 toCheck.add(left);
                 currentNode.children.add(left);
-
-                System.out.println(Arrays.toString(left.state[0]));
-                System.out.println(Arrays.toString(left.state[1]));
-                System.out.println(Arrays.toString(left.state[2]));
-                System.out.println("\n");
+                printing(left);
             }
 
             Node right = currentNode.Right(currentNode);
             if(right != null && uniqueToQue(toCheck, right) && uniqueToChecked(checked, right)){
                 toCheck.add(right);
                 currentNode.children.add(right);
-
-                System.out.println(Arrays.toString(right.state[0]));
-                System.out.println(Arrays.toString(right.state[1]));
-                System.out.println(Arrays.toString(right.state[2]));
-                System.out.println("\n");
+                printing(right);
             }
 
             checked.add(currentNode);
             System.out.println("State checked: " +stateChecked++);
+        }
+
+        if(goalFound == false){
+            System.out.println("Goal state wasn't found based on the given input.");
         }
     }
 
@@ -128,10 +128,12 @@ class BFS {
     public void trace(Node node){
         ArrayList<int[][]> tracing = new ArrayList<int[][]>();
         int length = 0;
+        int bfsCost = 0;
 
         while(node.parent != null){
             tracing.add(node.parent.state);
             length++;
+            bfsCost++;
             node = node.parent;
         }
 
@@ -140,6 +142,13 @@ class BFS {
         }
 
         System.out.println("Lenght: " + length);
+        System.out.println("Cost: " + bfsCost);
+    }
 
+    private void printing(Node nowNode) {
+        System.out.println(Arrays.toString(nowNode.state[0]));
+        System.out.println(Arrays.toString(nowNode.state[1]));
+        System.out.println(Arrays.toString(nowNode.state[2]));
+        System.out.println("\n");
     }
 }
