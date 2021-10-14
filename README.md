@@ -1,6 +1,8 @@
 # 8-puzzle-solver
 Different search method to solve an 8-tile puzzle game
 
+YouTube Video: https://www.youtube.com/watch?v=c6h7-MxEGec
+
 - Breadth First Search
 - Depth First Search
 - Iterative Deepening Search
